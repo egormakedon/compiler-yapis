@@ -14,6 +14,7 @@ DOT : '.';
 COMMA : ',';
 ASSIGNMENT : '=';
 SEMICOLON : ';';
+COLON : ':';
 
 MAIN : 'main';
 VOID : 'void';
@@ -23,32 +24,26 @@ CLEAR : 'clear';
 ADD : 'add';
 GET : 'get';
 REMOVE : 'remove';
-IS_EMPTY : 'isEmpty';
+
 SIZE : 'size';
+
+IS_EMPTY : 'isEmpty';
 CONTAINS : 'contains';
 
-ELEMENT : 'element';
-LIST : 'list';
+ELEMENT : 'Element';
+LIST : 'List';
 
 PRINT : 'print';
-IF : 'if';
-ELSE : 'else';
+
 FOR : 'for';
 
-PLUS : '+';
-MINUS  : '-';
-MULTIPLY : '*';
-DIVIDE : '/';
-
+IF : 'if';
+ELSE : 'else';
 AND : '&&';
 OR : '||';
-NEGATION : '!';
+
 EQUAL : '==';
-NON_EQUAL : '!=';
-GT : '>';
-GE : '>=';
-LT : '<';
-LE : '<=';
+NEGATION : '!';
 
 type : LIST | ELEMENT;
 blockOfCode : OPEN_CURLY_BRACKET content* CLOSE_CURLY_BRACKET;
@@ -59,6 +54,8 @@ functionSignature : OPEN_BRACKET type NAME (COMMA type NAME)* CLOSE_BRACKET;
 voidFunction : VOID NAME (functionSignature | (OPEN_BRACKET CLOSE_BRACKET)) blockOfCode;
 returnFunction : type NAME (functionSignature | (OPEN_BRACKET CLOSE_BRACKET)) returnBlockOfCode;
 
+functionCall : NAME ((OPEN_BRACKET CLOSE_BRACKET) | (OPEN_BRACKET (STRING | functionCall | callGet | NAME) (COMMA (STRING | functionCall | callGet | NAME))* CLOSE_BRACKET))  SEMICOLON;
+
 callClear : NAME DOT CLEAR OPEN_BRACKET CLOSE_BRACKET SEMICOLON;
 callAdd : NAME DOT ADD OPEN_BRACKET (NAME | (NUMBER COMMA NAME)) CLOSE_BRACKET SEMICOLON;
 callGet : NAME DOT GET OPEN_BRACKET NUMBER CLOSE_BRACKET SEMICOLON;
@@ -66,3 +63,17 @@ callRemove : NAME DOT REMOVE OPEN_BRACKET (NUMBER | NAME) CLOSE_BRACKET SEMICOLO
 callIsEmpty : NAME DOT IS_EMPTY OPEN_BRACKET CLOSE_BRACKET SEMICOLON;
 callSize : NAME DOT SIZE OPEN_BRACKET CLOSE_BRACKET SEMICOLON;
 callContains : NAME DOT CONTAINS OPEN_BRACKET NAME CLOSE_BRACKET SEMICOLON;
+
+elementDeclaration : ELEMENT? NAME ASSIGNMENT (STRING | functionCall | callGet | NAME) SEMICOLON;
+listDeclaration : LIST? NAME ASSIGNMENT (functionCall | NAME | (OPEN_CURLY_BRACKET CLOSE_CURLY_BRACKET) | (OPEN_CURLY_BRACKET (STRING | NAME) (COMMA (STRING | NAME))* CLOSE_CURLY_BRACKET)) SEMICOLON;
+
+callPrint : OPEN_BRACKET (STRING | NAME | callSize) CLOSE_BRACKET SEMICOLON;
+
+forCycle : FOR OPEN_BRACKET ELEMENT NAME COLON NAME CLOSE_BRACKET blockOfCode;
+
+compare : (NAME EQUAL NAME) | (NAME EQUAL STRING) | (callIsEmpty) | (callContains) | (NEGATION OPEN_BRACKET NAME EQUAL NAME CLOSE_BRACKET) | (NEGATION OPEN_BRACKET NAME EQUAL STRING CLOSE_BRACKET) | (NEGATION callIsEmpty) | ( NEGATION callContains);
+
+ifBlock : IF OPEN_BRACKET compare ((AND compare) | (OR compare))* CLOSE_BRACKET blockOfCode elseBlock?;
+elseBlock : ELSE blockOfCode;
+
+content : functionCall | callClear | callAdd | callGet | callRemove | elementDeclaration | listDeclaration | callPrint | forCycle | ifBlock;
