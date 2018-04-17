@@ -1,6 +1,6 @@
 grammar grammarFile;
 
-SPACE : [ \n\t\r]+ -> skip;
+SPACE :   [ \n\t\r]+ -> skip;
 NAME : [a-z][a-zA-Z0-9]*;
 NUMBER : [0-9]+;
 STRING : '"'(.)+?'"';
@@ -24,9 +24,6 @@ CLEAR : 'clear';
 ADD : 'add';
 GET : 'get';
 REMOVE : 'remove';
-
-SIZE : 'size';
-
 IS_EMPTY : 'isEmpty';
 CONTAINS : 'contains';
 
@@ -49,25 +46,25 @@ type : LIST | ELEMENT;
 blockOfCode : OPEN_CURLY_BRACKET content* CLOSE_CURLY_BRACKET;
 returnBlockOfCode : OPEN_CURLY_BRACKET content* RETURN NAME SEMICOLON CLOSE_CURLY_BRACKET;
 
-program : MAIN OPEN_BRACKET CLOSE_BRACKET blockOfCode (voidFunction | returnFunction)*;
+program : MAIN blockOfCode (voidFunction | returnFunction)*;
 functionSignature : OPEN_BRACKET type NAME (COMMA type NAME)* CLOSE_BRACKET;
 voidFunction : VOID NAME (functionSignature | (OPEN_BRACKET CLOSE_BRACKET)) blockOfCode;
 returnFunction : type NAME (functionSignature | (OPEN_BRACKET CLOSE_BRACKET)) returnBlockOfCode;
 
-functionCall : NAME ((OPEN_BRACKET CLOSE_BRACKET) | (OPEN_BRACKET (STRING | functionCall | callGet | NAME) (COMMA (STRING | functionCall | callGet | NAME))* CLOSE_BRACKET))  SEMICOLON;
+inputFunctionParameters : OPEN_BRACKET NAME (COMMA NAME)* CLOSE_BRACKET;
+functionCall : NAME (inputFunctionParameters | (OPEN_BRACKET CLOSE_BRACKET)) SEMICOLON;
 
 callClear : NAME DOT CLEAR OPEN_BRACKET CLOSE_BRACKET SEMICOLON;
 callAdd : NAME DOT ADD OPEN_BRACKET (NAME | (NUMBER COMMA NAME)) CLOSE_BRACKET SEMICOLON;
 callGet : NAME DOT GET OPEN_BRACKET NUMBER CLOSE_BRACKET SEMICOLON;
 callRemove : NAME DOT REMOVE OPEN_BRACKET (NUMBER | NAME) CLOSE_BRACKET SEMICOLON;
-callIsEmpty : NAME DOT IS_EMPTY OPEN_BRACKET CLOSE_BRACKET SEMICOLON;
-callSize : NAME DOT SIZE OPEN_BRACKET CLOSE_BRACKET SEMICOLON;
-callContains : NAME DOT CONTAINS OPEN_BRACKET NAME CLOSE_BRACKET SEMICOLON;
+callIsEmpty : NAME DOT IS_EMPTY OPEN_BRACKET CLOSE_BRACKET;
+callContains : NAME DOT CONTAINS OPEN_BRACKET NAME CLOSE_BRACKET;
 
-elementDeclaration : ELEMENT? NAME ASSIGNMENT (STRING | functionCall | callGet | NAME) SEMICOLON;
+elementDeclaration : ELEMENT? NAME ASSIGNMENT (STRING | functionCall | callGet) SEMICOLON;
 listDeclaration : LIST? NAME ASSIGNMENT (functionCall | NAME | (OPEN_CURLY_BRACKET CLOSE_CURLY_BRACKET) | (OPEN_CURLY_BRACKET (STRING | NAME) (COMMA (STRING | NAME))* CLOSE_CURLY_BRACKET)) SEMICOLON;
 
-callPrint : OPEN_BRACKET (STRING | NAME | callSize) CLOSE_BRACKET SEMICOLON;
+callPrint : OPEN_BRACKET (STRING | NAME) CLOSE_BRACKET SEMICOLON;
 
 forCycle : FOR OPEN_BRACKET ELEMENT NAME COLON NAME CLOSE_BRACKET blockOfCode;
 

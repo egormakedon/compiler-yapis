@@ -7,12 +7,17 @@ import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class GrammarVisitor extends grammarFileBaseVisitor<String> {
     private static final Logger LOGGER = LoggerFactory.getLogger(GrammarVisitor.class);
 
     private Variables variables = new Variables();
     private java.util.List<String> errors = new ArrayList<>();
+
+    private Map<String, String> functions = new HashMap<>();
+    private Map<String, grammarFileParser.FunctionSignatureContext> functionSignatures = new HashMap<>();
 
     @Override
     public String visitType(grammarFileParser.TypeContext ctx) {
@@ -25,6 +30,7 @@ public class GrammarVisitor extends grammarFileBaseVisitor<String> {
 
     @Override
     public String visitBlockOfCode(grammarFileParser.BlockOfCodeContext ctx) {
+        System.out.println(ctx);
         variables.increase();
         String buffer = "{\n";
         for (grammarFileParser.ContentContext context : ctx.content()) {
@@ -74,62 +80,158 @@ public class GrammarVisitor extends grammarFileBaseVisitor<String> {
 
     @Override
     public String visitFunctionSignature(grammarFileParser.FunctionSignatureContext ctx) {
-        return super.visitFunctionSignature(ctx);
+        String buffer = "(";
+        for (int index = 0; index < ctx.NAME().size(); index++) {
+            buffer += visitType(ctx.type(index)) + " " + ctx.NAME(index).getText();
+
+            if(index != ctx.NAME().size() - 1) {
+                buffer += ", ";
+            }
+        }
+
+        buffer += ")";
+        return buffer;
     }
 
     @Override
     public String visitVoidFunction(grammarFileParser.VoidFunctionContext ctx) {
-        return super.visitVoidFunction(ctx);
+        String buffer = "";
+        if (functions.get(ctx.NAME().getText()) == null) {
+            functions.put(ctx.NAME().getText(), "void");
+        } else {
+            errors.add("Function " + ctx.NAME().getText() + " already exist");
+        }
+
+        buffer += "private void " + ctx.NAME().getText();
+        if (ctx.functionSignature() != null) {
+            buffer += visitFunctionSignature(ctx.functionSignature()) + "throws Exception";
+            functionSignatures.put(ctx.NAME().getText(), ctx.functionSignature());
+        } else {
+            buffer += "() throws Exception";
+        }
+
+        variables.increase();
+        for (int index = 0; index < ctx.functionSignature().type().size(); index++) {
+            variables.put(ctx.functionSignature().NAME(index).getText(), ctx.functionSignature().type(index).getText());
+        }
+
+        buffer += visitBlockOfCode(ctx.blockOfCode());
+        return buffer;
     }
 
     @Override
     public String visitReturnFunction(grammarFileParser.ReturnFunctionContext ctx) {
-        return super.visitReturnFunction(ctx);
+        String buffer = "";
+        if (functions.get(ctx.NAME().getText()) == null) {
+            functions.put(ctx.NAME().getText(), visitType(ctx.type()));
+        } else {
+            errors.add("Function " + ctx.NAME().getText() + " already exist");
+        }
+
+        buffer += "private " + visitType(ctx.type()) + " " + ctx.NAME().getText();
+        if (ctx.functionSignature() != null) {
+            buffer += visitFunctionSignature(ctx.functionSignature()) + "throws Exception";
+            functionSignatures.put(ctx.NAME().getText(), ctx.functionSignature());
+        } else {
+            buffer += "() throws Exception";
+        }
+
+        variables.increase();
+        if (ctx.functionSignature() != null) {
+            for (int index = 0; index < ctx.functionSignature().type().size(); index++) {
+                variables.put(ctx.functionSignature().NAME(index).getText(), ctx.functionSignature().type(index).getText());
+            }
+        }
+
+        buffer += visitReturnBlockOfCode(ctx.returnBlockOfCode());
+        return buffer;
+    }
+
+    @Override
+    public String visitInputFunctionParameters(grammarFileParser.InputFunctionParametersContext ctx) {
+        return ctx.getText();
     }
 
     @Override
     public String visitFunctionCall(grammarFileParser.FunctionCallContext ctx) {
-        return super.visitFunctionCall(ctx);
+        String buffer = "";
+        if (functions.get(ctx.NAME().getText()) == null) {
+            errors.add("Initialize error: cant find function " + ctx.NAME().getText());
+        } else if (!checkSignatures(ctx.inputFunctionParameters(), functionSignatures.get(ctx.NAME().getText()))) {
+            errors.add("Error: cant find such arguments in function " + ctx.NAME().getText());
+        }
+
+        if (ctx.inputFunctionParameters() != null) {
+            buffer += ctx.NAME().getText() + visitInputFunctionParameters(ctx.inputFunctionParameters());
+        } else {
+            buffer += ctx.NAME().getText() + "()";
+        }
+
+        return buffer;
     }
 
     @Override
     public String visitCallClear(grammarFileParser.CallClearContext ctx) {
-        return super.visitCallClear(ctx);
+        return ctx.getText();
     }
 
     @Override
     public String visitCallAdd(grammarFileParser.CallAddContext ctx) {
-        return super.visitCallAdd(ctx);
+        return ctx.getText();
     }
 
     @Override
     public String visitCallGet(grammarFileParser.CallGetContext ctx) {
-        return super.visitCallGet(ctx);
+        return ctx.getText();
     }
 
     @Override
     public String visitCallRemove(grammarFileParser.CallRemoveContext ctx) {
-        return super.visitCallRemove(ctx);
+        return ctx.getText();
     }
 
     @Override
     public String visitCallIsEmpty(grammarFileParser.CallIsEmptyContext ctx) {
-        return super.visitCallIsEmpty(ctx);
-    }
-
-    @Override
-    public String visitCallSize(grammarFileParser.CallSizeContext ctx) {
-        return super.visitCallSize(ctx);
+        return ctx.getText();
     }
 
     @Override
     public String visitCallContains(grammarFileParser.CallContainsContext ctx) {
-        return super.visitCallContains(ctx);
+        return ctx.getText();
     }
 
     @Override
     public String visitElementDeclaration(grammarFileParser.ElementDeclarationContext ctx) {
-        return super.visitElementDeclaration(ctx);
+        String buffer = "";
+        if (variables.get(ctx.NAME().getText()) != null) {
+            if (ctx.ELEMENT() != null) {
+                errors.add("Initialize error: variable " + ctx.NAME().getText() + " already exist");
+            } else if (!variables.get(ctx.NAME().getText()).equalsIgnoreCase("element")) {
+                errors.add("Cast error: variable " + ctx.NAME().getText() + " is not element");
+            }
+        } else {
+            variables.put(ctx.NAME().getText(), "element");
+            buffer += "Element ";
+        }
+
+        if (ctx.STRING() != null) {
+            buffer += "" + ctx.NAME() + " = new Element(" + ctx.STRING().getText() + ");";
+        }
+
+        if (ctx.functionCall() != null) {
+            if (functions.get(ctx.functionCall().NAME().getText()) != null) {
+                if (!functions.get(ctx.functionCall().NAME().getText()).equalsIgnoreCase("element")) {
+                    errors.add("Cast error: function " + ctx.functionCall().NAME().getText() + " return not element");
+                }
+            }
+            buffer += "" + ctx.NAME().getText() + " = " + visitFunctionCall(ctx.functionCall()) + ";";
+        }
+
+        if (ctx.callGet() != null) {
+            buffer += "" + ctx.NAME().getText() + " = " + visitCallGet(ctx.callGet());
+        }
+
+        return buffer;
     }
 
     @Override
@@ -139,7 +241,20 @@ public class GrammarVisitor extends grammarFileBaseVisitor<String> {
 
     @Override
     public String visitCallPrint(grammarFileParser.CallPrintContext ctx) {
-        return super.visitCallPrint(ctx);
+        String buffer = "";
+
+        if (ctx.STRING() != null) {
+            buffer += "\tSystem.out.println(" + ctx.STRING().getText() + ");";
+        }
+
+        if (ctx.NAME() != null) {
+            if (variables.get(ctx.NAME().getText()) == null) {
+                errors.add("Can't find symbol " + ctx.NAME().getText());
+            }
+            buffer += "\tSystem.out.println(" + ctx.NAME().getText() + ");";
+        }
+
+        return buffer;
     }
 
     @Override
@@ -164,6 +279,62 @@ public class GrammarVisitor extends grammarFileBaseVisitor<String> {
 
     @Override
     public String visitContent(grammarFileParser.ContentContext ctx) {
-        return super.visitContent(ctx);
+        if (ctx.functionCall() != null) {
+            return visitFunctionCall(ctx.functionCall());
+        }
+
+        if (ctx.callClear() != null) {
+            return visitCallClear(ctx.callClear());
+        }
+
+        if (ctx.callAdd() != null) {
+            return visitCallAdd(ctx.callAdd());
+        }
+
+        if (ctx.callGet() != null) {
+            return visitCallGet(ctx.callGet());
+        }
+
+        if (ctx.callRemove() != null) {
+            return visitCallRemove(ctx.callRemove());
+        }
+
+        if (ctx.elementDeclaration() != null) {
+            return visitElementDeclaration(ctx.elementDeclaration());
+        }
+
+        if (ctx.listDeclaration() != null) {
+            return visitListDeclaration(ctx.listDeclaration());
+        }
+
+        if (ctx.callPrint() != null) {
+            return visitCallPrint(ctx.callPrint());
+        }
+
+        if (ctx.forCycle() != null) {
+            return visitForCycle(ctx.forCycle());
+        }
+
+        if (ctx.ifBlock() != null) {
+            return visitIfBlock(ctx.ifBlock());
+        }
+
+        return "";
+    }
+
+    private boolean checkSignatures(grammarFileParser.InputFunctionParametersContext in, grammarFileParser.FunctionSignatureContext sig) {
+        boolean check = true;
+        if (sig == null && in == null)
+            return true;
+        if (sig == null || in == null)
+            return false;
+        if (in.NAME().size() == sig.NAME().size()) {
+            for (int i = 0; i < sig.type().size(); i++) {
+                if (variables.get(in.NAME(i).getText()) == null
+                        || !variables.get(in.NAME(i).getText()).equalsIgnoreCase(visitType(sig.type(i))))
+                    check = false;
+            }
+        } else check = false;
+        return check;
     }
 }

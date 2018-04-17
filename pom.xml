@@ -7,6 +7,8 @@
     <groupId>com.epam.makedon.compiler</groupId>
     <artifactId>compiler-yapis</artifactId>
     <version>1.0</version>
+    <packaging>jar</packaging>
+    <name>Compiler</name>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -14,20 +16,62 @@
         <project.version>1.8</project.version>
 
         <maven.compiler.version>3.7.0</maven.compiler.version>
+        <maven.jdk.version>1.8</maven.jdk.version>
+        <maven.jar.plugin.version>3.1.0</maven.jar.plugin.version>
+        <maven.shade.plugin.version>2.1</maven.shade.plugin.version>
+
         <log4j.version>2.9.1</log4j.version>
-        <antlr.version>4.5.3</antlr.version>
+        <antlr.version>4.7.1</antlr.version>
     </properties>
 
     <build>
+        <finalName>Compiler</finalName>
+
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>${maven.compiler.version}</version>
                 <configuration>
-                    <source>1.8</source>
-                    <target>1.8</target>
+                    <source>${maven.jdk.version}</source>
+                    <target>${maven.jdk.version}</target>
                 </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>${maven.jar.plugin.version}</version>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <addClasspath>true</addClasspath>
+                            <mainClass>com.epam.makedon.compiler.Main</mainClass>
+                        </manifest>
+                    </archive>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>${maven.shade.plugin.version}</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <transformers>
+                                <transformer
+                                        implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                    <mainClass>com.epam.makedon.compiler.Main</mainClass>
+                                </transformer>
+                            </transformers>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>

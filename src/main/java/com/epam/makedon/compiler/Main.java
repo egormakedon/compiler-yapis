@@ -17,14 +17,15 @@ public class Main {
 
     public static void main(String[] args) {
         try {
-            ANTLRInputStream input = new ANTLRFileStream(args[0]);
+            String s = "/home/egor/Документы/compiler-yapis/src/test/program1.txt";
+            ANTLRInputStream input = new ANTLRFileStream(s);
             grammarFileLexer lexer = new grammarFileLexer(input);
             grammarFileParser parser = new grammarFileParser(new CommonTokenStream(lexer));
             ParseTree tree = parser.program();
             GrammarVisitor visitor = new GrammarVisitor();
             String output = (String) visitor.visit(tree);
 
-            FileWriter fileWriter = new FileWriter("Prograsm.java");
+            FileWriter fileWriter = new FileWriter("Program.java");
             fileWriter.write(output);
             fileWriter.close();
         } catch (IOException e) {
