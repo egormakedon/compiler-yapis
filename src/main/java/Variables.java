@@ -1,5 +1,3 @@
-package com.epam.makedon.compiler;
-
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 

@@ -1,14 +1,8 @@
-package com.epam.makedon.compiler;
-
 public class Constant {
     public static final String PROGRAM = "import java.util.Collections;\n" +
             "import java.util.ArrayList;\n" +
-            "import org.slf4j.Logger;\n" +
-            "import org.slf4j.LoggerFactory;\n" +
             "\n" +
             "public class Program {\n" +
-            "    private static final Logger LOGGER = LoggerFactory.getLogger(Program.class);\n" +
-            "\n" +
             "    public class Element {\n" +
             "        private String element;\n" +
             "\n" +
@@ -84,7 +78,7 @@ public class Constant {
             "        try {\n" +
             "            new Program().start();\n" +
             "        } catch (Exception e) {\n" +
-            "            LOGGER.error(\"\", e);\n" +
+            "            e.printStackTrace();\n" +
             "        }\n" +
             "    }\n" +
             "\n" +

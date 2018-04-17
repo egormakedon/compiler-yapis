@@ -1,1 +1,3 @@
-main{("asdas");}
+main() {
+    print("kaka");
+}
