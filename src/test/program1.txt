@@ -1,3 +1,7 @@
-main() {
-    print("kaka");
+{
+print("hello world")
+s()
+}
+void s() {
+print("kek")
 }
