@@ -105,4 +105,28 @@ public interface GrammarVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitElseBlock(GrammarParser.ElseBlockContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link GrammarParser#add}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitAdd(GrammarParser.AddContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link GrammarParser#clear}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitClear(GrammarParser.ClearContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link GrammarParser#get}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitGet(GrammarParser.GetContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link GrammarParser#remove}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitRemove(GrammarParser.RemoveContext ctx);
 }

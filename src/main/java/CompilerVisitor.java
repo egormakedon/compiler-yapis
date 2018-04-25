@@ -20,7 +20,6 @@ public class CompilerVisitor extends GrammarBaseVisitor<String> {
         }
 
         buffer += visitBlock(ctx.block());
-
         buffer += buffer1;
         buffer += "}";
 
@@ -52,6 +51,9 @@ public class CompilerVisitor extends GrammarBaseVisitor<String> {
             }
         }
 
+        globalListVars.clear();
+        globalElementVars.clear();
+
         String buffer = "{";
         for (GrammarParser.ContentContext context : ctx.content()) {
             buffer += visitContent(context);
@@ -71,7 +73,7 @@ public class CompilerVisitor extends GrammarBaseVisitor<String> {
         if (ctx.NAME() != null) {
             String s = ctx.NAME().getText();
             if (!(Memory.getInstance().containsElement(s) | Memory.getInstance().containsList(s))) {
-                errors.add("Variable " + s + " can't exists");
+                errors.add("Variable " + s + " can't exists - (Print)");
             }
             return "System.out.println(" + s + ");";
         }
@@ -125,10 +127,10 @@ public class CompilerVisitor extends GrammarBaseVisitor<String> {
     public String visitFunctionDefine(GrammarParser.FunctionDefineContext ctx) {
         String functionName = ctx.NAME().get(0).getText();
         if (Memory.getInstance().containsFunction(functionName)) {
-            errors.add("Function " + functionName + " already exists");
-        } else {
-            Memory.getInstance().addFunction(functionName);
+            errors.add("Function " + functionName + " already exists - (FunctionDefine)");
         }
+
+        Memory.getInstance().addFunction(functionName);
 
         String buffer = "private void " + functionName + "(";
 
@@ -158,7 +160,7 @@ public class CompilerVisitor extends GrammarBaseVisitor<String> {
     public String visitFunctionCall(GrammarParser.FunctionCallContext ctx) {
         String functionName = ctx.NAME().get(0).getText();
         if (!Memory.getInstance().containsFunction(functionName)) {
-            errors.add("Initialize error: cant find function " + functionName);
+            errors.add("Function " + functionName + " doesn't exists - (FunctionCall)");
         }
 
         String buffer = functionName + "(";
@@ -166,7 +168,7 @@ public class CompilerVisitor extends GrammarBaseVisitor<String> {
         for (int index = 1; index < ctx.NAME().size(); index++) {
             String name = ctx.NAME().get(index).getText();
             if (!(Memory.getInstance().containsElement(name) | Memory.getInstance().containsList(name))) {
-                errors.add("Variable " + name + " can't exists");
+                errors.add("Variable " + name + " doesn't exists - (FunctionCall)");
             }
 
             if (index > 1) {
@@ -186,14 +188,14 @@ public class CompilerVisitor extends GrammarBaseVisitor<String> {
         String name2 = ctx.NAME().get(1).getText();
 
         if (!Memory.getInstance().containsList(name1)) {
-            errors.add("Variable list " + name1 + " doesn't exist");
+            errors.add("Variable list " + name1 + " doesn't exist - (ForCycle)");
         }
 
         if (Memory.getInstance().containsElement(name2)) {
-            errors.add("Variable element" + name2 + " can't used here");
-        } else {
-            globalElementVars.add(name2);
+            errors.add("Variable element" + name2 + " already exists - (ForCycle)");
         }
+
+        globalElementVars.add(name2);
 
         String buffer = "for (Element " + name2 + ":" + name1 + ".getList()" + ")";
         buffer += visitBlock(ctx.block());
@@ -208,13 +210,13 @@ public class CompilerVisitor extends GrammarBaseVisitor<String> {
 
         if (ctx.ELEMENT() != null) {
             if (Memory.getInstance().containsElement(name)) {
-                errors.add("Variable element " + name + " already exists");
+                errors.add("Variable element " + name + " already exists - (ElementDeclaration)");
             }
             Memory.getInstance().addElement(name);
             buffer += "Element " + name + "=";
         } else {
             if (!Memory.getInstance().containsElement(name)) {
-                errors.add("Variable element " + name + " doesn't exists");
+                errors.add("Variable element " + name + " doesn't exists - (ElementDeclaration)");
             }
             buffer += name + "=";
         }
@@ -224,9 +226,9 @@ public class CompilerVisitor extends GrammarBaseVisitor<String> {
         } else {
             String name2 = ctx.NAME().get(1).getText();
             if (!Memory.getInstance().containsElement(name2)) {
-                errors.add("Variable element " + name2 + " doesn't exists");
+                errors.add("Variable element " + name2 + " doesn't exists - (ElementDeclaration)");
             }
-            buffer += "new Element(" + name2 + ".toString())" + ";";
+            buffer += "new Element(" + name2 + ".toString());";
         }
 
         return buffer;
@@ -241,26 +243,27 @@ public class CompilerVisitor extends GrammarBaseVisitor<String> {
             String name2 = ctx.NAME().get(1).getText();
 
             if (!Memory.getInstance().containsList(name2)) {
-                errors.add("Variable list " + name2 + " doesn't exists");
+                errors.add("Variable list " + name2 + " doesn't exists - (ListDeclaration)");
             }
 
             if (ctx.LIST() != null) {
                 if (Memory.getInstance().containsList(name1)) {
-                    errors.add("Variable list " + name1 + " already exists");
+                    errors.add("Variable list " + name1 + " already exists - (ListDeclaration)");
                 }
+                Memory.getInstance().addList(name1);
                 buffer += "List " + name1 + "=" + "new List(" + name2 + ".getList());";
             } else {
                 if (!Memory.getInstance().containsList(name1)) {
-                    errors.add("Variable list " + name1 + " doesn't exists");
+                    errors.add("Variable list " + name1 + " doesn't exists  - (ListDeclaration)");
                 }
                 buffer += name1 + "=" + "new List(" + name2 + ".getList());";
             }
         } else {
             String name = ctx.NAME().get(0).getText();
             if (Memory.getInstance().containsList(name)) {
-                errors.add("Variable list " + name + " already exists");
+                errors.add("Variable list " + name + " already exists - (ListDeclaration)");
             }
-
+            Memory.getInstance().addList(name);
             buffer += "List " + name + "= new List();";
         }
 
@@ -278,7 +281,7 @@ public class CompilerVisitor extends GrammarBaseVisitor<String> {
         } else if (Memory.getInstance().containsElement(name1) && Memory.getInstance().containsElement(name2)) {
             buffer += name1 + ".equals(" + name2 + ")";
         } else {
-            errors.add("Variables " + name1 + " and " + name2 + " can't be compared");
+            errors.add("Variables " + name1 + " and " + name2 + " can't be compared - (EqualNames)");
         }
 
         return buffer;
@@ -288,6 +291,14 @@ public class CompilerVisitor extends GrammarBaseVisitor<String> {
     public String visitCompare(GrammarParser.CompareContext ctx) {
         if (ctx.equalNames() != null) {
             return visitEqualNames(ctx.equalNames());
+        }
+
+        if (ctx.contains() != null) {
+            return visitContains(ctx.contains());
+        }
+
+        if (ctx.is_empty() != null) {
+            return visitIs_empty(ctx.is_empty());
         }
 
         return "";
@@ -316,11 +327,11 @@ public class CompilerVisitor extends GrammarBaseVisitor<String> {
         String name2 = ctx.NAME().get(1).getText();
 
         if (!Memory.getInstance().containsList(name1)) {
-            errors.add("Variable list " + name1 + " doesn't exists");
+            errors.add("Variable list " + name1 + " doesn't exists - (Contains)");
         }
 
         if (!Memory.getInstance().containsElement(name2)) {
-            errors.add("Variable element " + name2 + " doesn't exists");
+            errors.add("Variable element " + name2 + " doesn't exists - (Contains)");
         }
 
         return name1 + ".contains(" + name2 + ")";
@@ -331,7 +342,7 @@ public class CompilerVisitor extends GrammarBaseVisitor<String> {
         String name1 = ctx.NAME().getText();
 
         if (!Memory.getInstance().containsList(name1)) {
-            errors.add("Variable list " + name1 + " doesn't exists");
+            errors.add("Variable list " + name1 + " doesn't exists - (Contains)");
         }
 
         return name1 + ".isEmpty()";

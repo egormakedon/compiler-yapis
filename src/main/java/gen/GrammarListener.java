@@ -166,4 +166,44 @@ public interface GrammarListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitElseBlock(GrammarParser.ElseBlockContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link GrammarParser#add}.
+	 * @param ctx the parse tree
+	 */
+	void enterAdd(GrammarParser.AddContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link GrammarParser#add}.
+	 * @param ctx the parse tree
+	 */
+	void exitAdd(GrammarParser.AddContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link GrammarParser#clear}.
+	 * @param ctx the parse tree
+	 */
+	void enterClear(GrammarParser.ClearContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link GrammarParser#clear}.
+	 * @param ctx the parse tree
+	 */
+	void exitClear(GrammarParser.ClearContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link GrammarParser#get}.
+	 * @param ctx the parse tree
+	 */
+	void enterGet(GrammarParser.GetContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link GrammarParser#get}.
+	 * @param ctx the parse tree
+	 */
+	void exitGet(GrammarParser.GetContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link GrammarParser#remove}.
+	 * @param ctx the parse tree
+	 */
+	void enterRemove(GrammarParser.RemoveContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link GrammarParser#remove}.
+	 * @param ctx the parse tree
+	 */
+	void exitRemove(GrammarParser.RemoveContext ctx);
 }

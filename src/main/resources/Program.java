@@ -43,10 +43,6 @@
 //            list.add(element);
 //        }
 //
-//        public void add(int index, Element element) {
-//            list.add(index, element);
-//        }
-//
 //        public Element get(int index) {
 //            return list.get(index);
 //        }
@@ -63,7 +59,7 @@
 //            return list.contains(element);
 //        }
 //
-//        public boolean isEmptry() {
+//        public boolean isEmpty() {
 //            return list.isEmpty();
 //        }
 //    }
