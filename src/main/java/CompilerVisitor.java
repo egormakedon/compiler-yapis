@@ -73,9 +73,13 @@ public class CompilerVisitor extends GrammarBaseVisitor<String> {
         if (ctx.NAME() != null) {
             String s = ctx.NAME().getText();
             if (!(Memory.getInstance().containsElement(s) | Memory.getInstance().containsList(s))) {
-                errors.add("Variable " + s + " can't exists - (Print)");
+                errors.add("Variable " + s + " doesn't exists - (Print)");
             }
             return "System.out.println(" + s + ");";
+        }
+
+        if (ctx.size() != null) {
+            return "System.out.println(" + visitSize(ctx.size()) + ");";
         }
 
         return "";
@@ -117,6 +121,10 @@ public class CompilerVisitor extends GrammarBaseVisitor<String> {
 
         if (ctx.clear() != null) {
             return visitClear(ctx.clear());
+        }
+
+        if (ctx.concate() != null) {
+            return visitConcate(ctx.concate());
         }
 
         return "";
@@ -315,6 +323,26 @@ public class CompilerVisitor extends GrammarBaseVisitor<String> {
             return visitIs_empty(ctx.is_empty());
         }
 
+        if (ctx.compareEQ() != null) {
+            return visitCompareEQ(ctx.compareEQ());
+        }
+
+        if (ctx.compareGE() != null) {
+            return visitCompareGE(ctx.compareGE());
+        }
+
+        if (ctx.compareGT() != null) {
+            return visitCompareGT(ctx.compareGT());
+        }
+
+        if (ctx.compareLE() != null) {
+            return visitCompareLE(ctx.compareLE());
+        }
+
+        if (ctx.compareLT() != null) {
+            return visitCompareLT(ctx.compareLT());
+        }
+
         return "";
     }
 
@@ -419,6 +447,64 @@ public class CompilerVisitor extends GrammarBaseVisitor<String> {
             }
 
             buffer += name1 + ".remove(" + name2 + ");";
+        }
+
+        return buffer;
+    }
+
+    @Override
+    public String visitSize(GrammarParser.SizeContext ctx) {
+        String name1 = ctx.NAME().getText();
+
+        if (!Memory.getInstance().containsList(name1)) {
+            errors.add("Variable list " + name1 + " doesn't exists - (Size)");
+        }
+
+        return name1 + ".size()";
+    }
+
+    @Override
+    public String visitCompareGE(GrammarParser.CompareGEContext ctx) {
+        String num = ctx.NUMBER().getText();
+        return visitSize(ctx.size()) + ">=" + num;
+    }
+
+    @Override
+    public String visitCompareGT(GrammarParser.CompareGTContext ctx) {
+        String num = ctx.NUMBER().getText();
+        return visitSize(ctx.size()) + ">" + num;
+    }
+
+    @Override
+    public String visitCompareLE(GrammarParser.CompareLEContext ctx) {
+        String num = ctx.NUMBER().getText();
+        return visitSize(ctx.size()) + "<=" + num;
+    }
+
+    @Override
+    public String visitCompareLT(GrammarParser.CompareLTContext ctx) {
+        String num = ctx.NUMBER().getText();
+        return visitSize(ctx.size()) + "<" + num;
+    }
+
+    @Override
+    public String visitCompareEQ(GrammarParser.CompareEQContext ctx) {
+        String num = ctx.NUMBER().getText();
+        return visitSize(ctx.size()) + "==" + num;
+    }
+
+    @Override
+    public String visitConcate(GrammarParser.ConcateContext ctx) {
+        String name1 = ctx.NAME().get(0).getText();
+        String name2 = ctx.NAME().get(1).getText();
+
+        String buffer = "";
+        if (Memory.getInstance().containsElement(name1) && Memory.getInstance().containsElement(name2)) {
+            buffer += name1 + "= new Element(" + name1 + ".toString()+" + name2 + ".toString());";
+        } else if (Memory.getInstance().containsList(name1) && Memory.getInstance().containsList(name2)) {
+            buffer += name1 + ".getList().add(" + name2 + ");";
+        } else {
+            errors.add("Wrong variables " + name1 + " and " + name2 + " - (Concate)");
         }
 
         return buffer;

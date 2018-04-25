@@ -206,4 +206,74 @@ public interface GrammarListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitRemove(GrammarParser.RemoveContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link GrammarParser#size}.
+	 * @param ctx the parse tree
+	 */
+	void enterSize(GrammarParser.SizeContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link GrammarParser#size}.
+	 * @param ctx the parse tree
+	 */
+	void exitSize(GrammarParser.SizeContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link GrammarParser#compareGE}.
+	 * @param ctx the parse tree
+	 */
+	void enterCompareGE(GrammarParser.CompareGEContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link GrammarParser#compareGE}.
+	 * @param ctx the parse tree
+	 */
+	void exitCompareGE(GrammarParser.CompareGEContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link GrammarParser#compareGT}.
+	 * @param ctx the parse tree
+	 */
+	void enterCompareGT(GrammarParser.CompareGTContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link GrammarParser#compareGT}.
+	 * @param ctx the parse tree
+	 */
+	void exitCompareGT(GrammarParser.CompareGTContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link GrammarParser#compareLE}.
+	 * @param ctx the parse tree
+	 */
+	void enterCompareLE(GrammarParser.CompareLEContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link GrammarParser#compareLE}.
+	 * @param ctx the parse tree
+	 */
+	void exitCompareLE(GrammarParser.CompareLEContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link GrammarParser#compareLT}.
+	 * @param ctx the parse tree
+	 */
+	void enterCompareLT(GrammarParser.CompareLTContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link GrammarParser#compareLT}.
+	 * @param ctx the parse tree
+	 */
+	void exitCompareLT(GrammarParser.CompareLTContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link GrammarParser#compareEQ}.
+	 * @param ctx the parse tree
+	 */
+	void enterCompareEQ(GrammarParser.CompareEQContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link GrammarParser#compareEQ}.
+	 * @param ctx the parse tree
+	 */
+	void exitCompareEQ(GrammarParser.CompareEQContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link GrammarParser#concate}.
+	 * @param ctx the parse tree
+	 */
+	void enterConcate(GrammarParser.ConcateContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link GrammarParser#concate}.
+	 * @param ctx the parse tree
+	 */
+	void exitConcate(GrammarParser.ConcateContext ctx);
 }

@@ -129,4 +129,46 @@ public interface GrammarVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitRemove(GrammarParser.RemoveContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link GrammarParser#size}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitSize(GrammarParser.SizeContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link GrammarParser#compareGE}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitCompareGE(GrammarParser.CompareGEContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link GrammarParser#compareGT}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitCompareGT(GrammarParser.CompareGTContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link GrammarParser#compareLE}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitCompareLE(GrammarParser.CompareLEContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link GrammarParser#compareLT}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitCompareLT(GrammarParser.CompareLTContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link GrammarParser#compareEQ}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitCompareEQ(GrammarParser.CompareEQContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link GrammarParser#concate}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitConcate(GrammarParser.ConcateContext ctx);
 }

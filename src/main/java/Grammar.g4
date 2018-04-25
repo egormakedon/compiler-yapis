@@ -31,7 +31,7 @@ LT : '<';
 PLUS : '+';
 program : block functionDefine*;
 block : OPEN_CURLY_BRACKET content* CLOSE_CURLY_BRACKET;
-print : PRINT OPEN_BRACKET (STRING | NAME) CLOSE_BRACKET;
+print : PRINT OPEN_BRACKET (STRING | NAME | size) CLOSE_BRACKET;
 content : print | functionCall | forCycle | elementDeclaration | listDeclaration | ifBlock | add | clear | remove | concate;
 type : LIST | ELEMENT;
 functionDefine : VOID NAME OPEN_BRACKET type NAME (COMMA type NAME)* CLOSE_BRACKET block;
