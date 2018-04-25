@@ -107,6 +107,22 @@ public class CompilerVisitor extends GrammarBaseVisitor<String> {
             return visitIfBlock(ctx.ifBlock());
         }
 
+        if (ctx.add() != null) {
+            return visitAdd(ctx.add());
+        }
+
+        if (ctx.get() != null) {
+            return visitGet(ctx.get());
+        }
+
+        if (ctx.remove() != null) {
+            return visitRemove(ctx.remove());
+        }
+
+        if (ctx.clear() != null) {
+            return visitClear(ctx.clear());
+        }
+
         return "";
     }
 
@@ -346,5 +362,67 @@ public class CompilerVisitor extends GrammarBaseVisitor<String> {
         }
 
         return name1 + ".isEmpty()";
+    }
+
+    @Override
+    public String visitAdd(GrammarParser.AddContext ctx) {
+        String name1 = ctx.NAME().get(0).getText();
+        String name2 = ctx.NAME().get(1).getText();
+
+        if (!Memory.getInstance().containsList(name1)) {
+            errors.add("Variable list " + name1 + " doesn't exists - (Add)");
+        }
+
+        if (!Memory.getInstance().containsElement(name2)) {
+            errors.add("Variable element " + name2 + " doesn't exists - (Add)");
+        }
+
+        return name1 + ".add(" + name2 + ");";
+    }
+
+    @Override
+    public String visitClear(GrammarParser.ClearContext ctx) {
+        String name1 = ctx.NAME().getText();
+
+        if (!Memory.getInstance().containsList(name1)) {
+            errors.add("Variable list " + name1 + " doesn't exists - (Clear)");
+        }
+
+        return name1 + ".clear();";
+    }
+
+    @Override
+    public String visitGet(GrammarParser.GetContext ctx) {
+        String name1 = ctx.NAME().getText();
+
+        if (!Memory.getInstance().containsList(name1)) {
+            errors.add("Variable list " + name1 + " doesn't exists - (Get)");
+        }
+
+        return name1 + ".get(" + ctx.NUMBER().getText() + ")";
+    }
+
+    @Override
+    public String visitRemove(GrammarParser.RemoveContext ctx) {
+        String name1 = ctx.NAME().get(0).getText();
+
+        if (!Memory.getInstance().containsList(name1)) {
+            errors.add("Variable list " + name1 + " doesn't exists - (Remove)");
+        }
+
+        String buffer = "";
+        if (ctx.NUMBER() != null) {
+            buffer += name1 + ".remove(" + ctx.NUMBER().getText() + ");";
+        } else {
+            String name2 = ctx.NAME().get(1).getText();
+
+            if (!Memory.getInstance().containsElement(name2)) {
+                errors.add("Variable element " + name2 + " doesn't exists - (Remove)");
+            }
+
+            buffer += name1 + ".remove(" + name2 + ");";
+        }
+
+        return buffer;
     }
 }
