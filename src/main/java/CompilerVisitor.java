@@ -111,10 +111,6 @@ public class CompilerVisitor extends GrammarBaseVisitor<String> {
             return visitAdd(ctx.add());
         }
 
-        if (ctx.get() != null) {
-            return visitGet(ctx.get());
-        }
-
         if (ctx.remove() != null) {
             return visitRemove(ctx.remove());
         }
@@ -239,6 +235,8 @@ public class CompilerVisitor extends GrammarBaseVisitor<String> {
 
         if (ctx.STRING() != null) {
             buffer += "new Element(" + ctx.STRING().getText() + ");";
+        } else if (ctx.get() != null) {
+            buffer += "new Element(" + visitGet(ctx.get()) + ");";
         } else {
             String name2 = ctx.NAME().get(1).getText();
             if (!Memory.getInstance().containsElement(name2)) {
