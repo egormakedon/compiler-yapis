@@ -76,6 +76,18 @@ public interface GrammarVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitEqualNames(GrammarParser.EqualNamesContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link GrammarParser#contains}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitContains(GrammarParser.ContainsContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link GrammarParser#is_empty}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitIs_empty(GrammarParser.Is_emptyContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link GrammarParser#compare}.
 	 * @param ctx the parse tree
 	 * @return the visitor result

@@ -295,7 +295,12 @@ public class CompilerVisitor extends GrammarBaseVisitor<String> {
 
     @Override
     public String visitIfBlock(GrammarParser.IfBlockContext ctx) {
-        return super.visitIfBlock(ctx);
+        String buffer = "";
+        buffer += "if(" + visitCompare(ctx.compare()) + ")" + visitBlock(ctx.block());
+        if (ctx.elseBlock() != null) {
+            buffer += visitElseBlock(ctx.elseBlock());
+        }
+        return buffer;
     }
 
     @Override
@@ -303,5 +308,32 @@ public class CompilerVisitor extends GrammarBaseVisitor<String> {
         String buffer = "else";
         buffer += visitBlock(ctx.block());
         return buffer;
+    }
+
+    @Override
+    public String visitContains(GrammarParser.ContainsContext ctx) {
+        String name1 = ctx.NAME().get(0).getText();
+        String name2 = ctx.NAME().get(1).getText();
+
+        if (!Memory.getInstance().containsList(name1)) {
+            errors.add("Variable list " + name1 + " doesn't exists");
+        }
+
+        if (!Memory.getInstance().containsElement(name2)) {
+            errors.add("Variable element " + name2 + " doesn't exists");
+        }
+
+        return name1 + ".contains(" + name2 + ")";
+    }
+
+    @Override
+    public String visitIs_empty(GrammarParser.Is_emptyContext ctx) {
+        String name1 = ctx.NAME().getText();
+
+        if (!Memory.getInstance().containsList(name1)) {
+            errors.add("Variable list " + name1 + " doesn't exists");
+        }
+
+        return name1 + ".isEmpty()";
     }
 }

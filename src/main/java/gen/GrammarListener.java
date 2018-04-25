@@ -117,6 +117,26 @@ public interface GrammarListener extends ParseTreeListener {
 	 */
 	void exitEqualNames(GrammarParser.EqualNamesContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link GrammarParser#contains}.
+	 * @param ctx the parse tree
+	 */
+	void enterContains(GrammarParser.ContainsContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link GrammarParser#contains}.
+	 * @param ctx the parse tree
+	 */
+	void exitContains(GrammarParser.ContainsContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link GrammarParser#is_empty}.
+	 * @param ctx the parse tree
+	 */
+	void enterIs_empty(GrammarParser.Is_emptyContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link GrammarParser#is_empty}.
+	 * @param ctx the parse tree
+	 */
+	void exitIs_empty(GrammarParser.Is_emptyContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link GrammarParser#compare}.
 	 * @param ctx the parse tree
 	 */
