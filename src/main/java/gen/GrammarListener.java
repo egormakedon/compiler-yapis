@@ -57,35 +57,15 @@ public interface GrammarListener extends ParseTreeListener {
 	 */
 	void exitType(GrammarParser.TypeContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link GrammarParser#functionSignature}.
+	 * Enter a parse tree produced by {@link GrammarParser#functionDefine}.
 	 * @param ctx the parse tree
 	 */
-	void enterFunctionSignature(GrammarParser.FunctionSignatureContext ctx);
+	void enterFunctionDefine(GrammarParser.FunctionDefineContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link GrammarParser#functionSignature}.
+	 * Exit a parse tree produced by {@link GrammarParser#functionDefine}.
 	 * @param ctx the parse tree
 	 */
-	void exitFunctionSignature(GrammarParser.FunctionSignatureContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link GrammarParser#voidFunction}.
-	 * @param ctx the parse tree
-	 */
-	void enterVoidFunction(GrammarParser.VoidFunctionContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link GrammarParser#voidFunction}.
-	 * @param ctx the parse tree
-	 */
-	void exitVoidFunction(GrammarParser.VoidFunctionContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link GrammarParser#functionParameters}.
-	 * @param ctx the parse tree
-	 */
-	void enterFunctionParameters(GrammarParser.FunctionParametersContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link GrammarParser#functionParameters}.
-	 * @param ctx the parse tree
-	 */
-	void exitFunctionParameters(GrammarParser.FunctionParametersContext ctx);
+	void exitFunctionDefine(GrammarParser.FunctionDefineContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link GrammarParser#functionCall}.
 	 * @param ctx the parse tree
@@ -96,4 +76,74 @@ public interface GrammarListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitFunctionCall(GrammarParser.FunctionCallContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link GrammarParser#forCycle}.
+	 * @param ctx the parse tree
+	 */
+	void enterForCycle(GrammarParser.ForCycleContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link GrammarParser#forCycle}.
+	 * @param ctx the parse tree
+	 */
+	void exitForCycle(GrammarParser.ForCycleContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link GrammarParser#elementDeclaration}.
+	 * @param ctx the parse tree
+	 */
+	void enterElementDeclaration(GrammarParser.ElementDeclarationContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link GrammarParser#elementDeclaration}.
+	 * @param ctx the parse tree
+	 */
+	void exitElementDeclaration(GrammarParser.ElementDeclarationContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link GrammarParser#listDeclaration}.
+	 * @param ctx the parse tree
+	 */
+	void enterListDeclaration(GrammarParser.ListDeclarationContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link GrammarParser#listDeclaration}.
+	 * @param ctx the parse tree
+	 */
+	void exitListDeclaration(GrammarParser.ListDeclarationContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link GrammarParser#equalNames}.
+	 * @param ctx the parse tree
+	 */
+	void enterEqualNames(GrammarParser.EqualNamesContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link GrammarParser#equalNames}.
+	 * @param ctx the parse tree
+	 */
+	void exitEqualNames(GrammarParser.EqualNamesContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link GrammarParser#compare}.
+	 * @param ctx the parse tree
+	 */
+	void enterCompare(GrammarParser.CompareContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link GrammarParser#compare}.
+	 * @param ctx the parse tree
+	 */
+	void exitCompare(GrammarParser.CompareContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link GrammarParser#ifBlock}.
+	 * @param ctx the parse tree
+	 */
+	void enterIfBlock(GrammarParser.IfBlockContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link GrammarParser#ifBlock}.
+	 * @param ctx the parse tree
+	 */
+	void exitIfBlock(GrammarParser.IfBlockContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link GrammarParser#elseBlock}.
+	 * @param ctx the parse tree
+	 */
+	void enterElseBlock(GrammarParser.ElseBlockContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link GrammarParser#elseBlock}.
+	 * @param ctx the parse tree
+	 */
+	void exitElseBlock(GrammarParser.ElseBlockContext ctx);
 }

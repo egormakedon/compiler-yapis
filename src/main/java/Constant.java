@@ -23,13 +23,8 @@ public class Constant {
             "            list = new ArrayList<>();\n" +
             "        }\n" +
             "\n" +
-            "        public List(java.util.List<Element> list) {\n" +
-            "            this.list = list;\n" +
-            "        }\n" +
-            "\n" +
-            "        public List(Element[] elements) {\n" +
-            "            this();\n" +
-            "            Collections.addAll(list, elements);\n" +
+            "        public List(java.util.List<Element> list) {            \n" +
+            "            this.list = new ArrayList<>(list);\n" +
             "        }\n" +
             "\n" +
             "        public java.util.List<Element> getList() {\n" +

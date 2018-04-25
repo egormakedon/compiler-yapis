@@ -23,12 +23,7 @@
 //        }
 //
 //        public List(java.util.List<Element> list) {
-//            this.list = list;
-//        }
-//
-//        public List(Element[] elements) {
-//            this();
-//            Collections.addAll(list, elements);
+//            this.list = new ArrayList<>(list);
 //        }
 //
 //        public java.util.List<Element> getList() {
