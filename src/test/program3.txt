@@ -1,0 +1,24 @@
+{
+Print("program3")
+Element e1 = "element1"
+Element e2 = "element2"
+List l1
+List l2
+Add(l1,e1)
+Add(l2,e2)
++(e1,e2)
+Add(l2,e1)
+Print("size l1 list before concate:")
+Print(Size(l1))
++(l1,l2)
+Print("l1 after concate:")
+Print(l1)
++(l1,l2)
+Print(l1)
+Remove(l1,e1)
+Clear(l2)
+Print("print l1:")
+Print(l1)
+Print("print l2:")
+Print(l2)
+}

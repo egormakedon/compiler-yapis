@@ -460,7 +460,7 @@ public class CompilerVisitor extends GrammarBaseVisitor<String> {
             errors.add("Variable list " + name1 + " doesn't exists - (Size)");
         }
 
-        return name1 + ".size()";
+        return name1 + ".getList().size()";
     }
 
     @Override
@@ -502,7 +502,7 @@ public class CompilerVisitor extends GrammarBaseVisitor<String> {
         if (Memory.getInstance().containsElement(name1) && Memory.getInstance().containsElement(name2)) {
             buffer += name1 + "= new Element(" + name1 + ".toString()+" + name2 + ".toString());";
         } else if (Memory.getInstance().containsList(name1) && Memory.getInstance().containsList(name2)) {
-            buffer += name1 + ".getList().add(" + name2 + ");";
+            buffer += name1 + ".getList().addAll(" + name2 + ".getList());";
         } else {
             errors.add("Wrong variables " + name1 + " and " + name2 + " - (Concate)");
         }

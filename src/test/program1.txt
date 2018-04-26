@@ -1,4 +1,6 @@
 {
+Print("program1")
 Element e = "privet"
-print(e)
+Print("Print element e:")
+Print(e)
 }

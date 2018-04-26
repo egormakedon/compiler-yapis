@@ -10,7 +10,7 @@ VOID : 'Void';
 LIST : 'List';
 ELEMENT : 'Element';
 COMMA : ',';
-NAME : [a-z]+;
+NAME : [a-z][a-zA-Z0-9]*;
 NUMBER : [0-9]+;
 ASSIGNMENT : '=';
 FOR : 'For';

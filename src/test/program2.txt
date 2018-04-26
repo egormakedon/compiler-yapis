@@ -1,0 +1,20 @@
+{
+Print("program2")
+Element el1 = "element1"
+Element el2 = "element2"
+Element el3 = "element3"
+Element el4 = "element4"
+Element el5 = "element5"
+List s
+Add(s,el1)
+Add(s,el2)
+Add(s,el3)
+Add(s,el4)
+Add(s,el5)
+printfunc(s)
+}
+Void printfunc(List s){
+For(s,l){
+Print(l)
+}
+}
