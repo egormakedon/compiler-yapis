@@ -299,9 +299,9 @@ public class CompilerVisitor extends GrammarBaseVisitor<String> {
         String buffer = "";
 
         if (Memory.getInstance().containsList(name1) && Memory.getInstance().containsList(name2)) {
-            buffer += name1 + ".equals(" + name2 + ")";
+            buffer += name1 + ".getList().equals(" + name2 + ".getList())";
         } else if (Memory.getInstance().containsElement(name1) && Memory.getInstance().containsElement(name2)) {
-            buffer += name1 + ".equals(" + name2 + ")";
+            buffer += name1 + ".toString().equals(" + name2 + ".toString())";
         } else {
             errors.add("Variables " + name1 + " and " + name2 + " can't be compared - (EqualNames)");
         }
